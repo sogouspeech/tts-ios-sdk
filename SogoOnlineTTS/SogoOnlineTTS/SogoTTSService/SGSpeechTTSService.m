@@ -1,9 +1,12 @@
 //
 //  SGSpeechTTSService.m
-//  SogoOnlineTTS
+//  tts-iOS-sdk
+//  Speech synthesis service class
 //
-//  Created by MaMarx on 2018/11/18.
-//  Copyright © 2018年 MaMarx. All rights reserved.
+//  Created by sogou on 2018/12/10.
+//  Copyright 2018 Sogou Inc. All rights reserved.
+//  Use of this source code is governed by the Apache 2.0
+//  license that can be found in the LICENSE file.
 //
 
 #import "SGSpeechTTSService.h"
@@ -33,7 +36,7 @@ static NSString *const kHostAddress = @"canary.speech.sogou.com:443";
 
 @implementation SGSpeechTTSService
 
--(id)init {
+- (id)init {
     if (self = [super init]) {
         _appid = nil;
         _uuid = nil;
@@ -43,17 +46,17 @@ static NSString *const kHostAddress = @"canary.speech.sogou.com:443";
     return self;
 }
 
--(void)setAppid:(NSString *)appid uuid:(NSString *)uuid token:(NSString *)token{
+- (void)setAppid:(NSString *)appid uuid:(NSString *)uuid token:(NSString *)token{
     self.appid = appid;
     self.uuid = uuid;
     self.token = token;
 }
 
--(void)setConfig:(id)config{
+- (void)setConfig:(id)config{
     _config = (SGSpeechTTSServiceConfig*)config;
 }
 
--(void)synthesisUtterance:(NSString *)utterance{
+- (void)synthesisUtterance:(NSString *)utterance{
     self.ttsService = [[SPBtts alloc]initWithHost:kHostAddress];
     SPBSynthesizeRequest * request = [[SPBSynthesizeRequest alloc] init];
     
@@ -84,7 +87,7 @@ static NSString *const kHostAddress = @"canary.speech.sogou.com:443";
             [self debugWaveDataToFile:response.audioContent newFile:YES];
         }
         NSLog(@"err = %@",error);
-        NSLog(@"response length = %zd", response.audioContent.length);
+//        NSLog(@"response length = %u", response.audioContent.length);
     }];
     
     self.call.timeout = 10.0;
@@ -92,15 +95,14 @@ static NSString *const kHostAddress = @"canary.speech.sogou.com:443";
     self.call.requestHeaders[@"uuid"] = self.uuid;
     self.call.requestHeaders[@"Authorization"] = [NSString stringWithFormat:@"Bearer %@",self.token];
     [self.call start];
-    NSLog(@"send request");
+//    NSLog(@"send request");
 }
 
 - (BOOL) isStreaming {
     return _streaming;
 }
 
--(void)debugWaveDataToFile:(NSData*)data newFile:(BOOL)create
-{
+- (void)debugWaveDataToFile:(NSData*)data newFile:(BOOL)create{
     static dispatch_queue_t save_wave_queue;
     static NSString *filePath = nil;
     if(save_wave_queue == nil){

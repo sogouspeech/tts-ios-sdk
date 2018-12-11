@@ -1,9 +1,12 @@
 //
 //  SGSpeechOnlineSynthesizer.m
-//  SogoOnlineTTS
+//  tts-iOS-sdk
+//  Synthetic class methods and property declarations
 //
-//  Created by MaMarx on 2018/11/18.
-//  Copyright © 2018年 MaMarx. All rights reserved.
+//  Created by sogou on 2018/12/10.
+//  Copyright 2018 Sogou Inc. All rights reserved.
+//  Use of this source code is governed by the Apache 2.0
+//  license that can be found in the LICENSE file.
 //
 
 #import "SGSpeechOnlineSynthesizer.h"
@@ -12,18 +15,18 @@
 #import "SGSpeechTTSServiceConfig.h"
 
 @interface SGSpeechOnlineSynthesizer()<SGSpeechTTSDelegate, AVAudioPlayerDelegate>
-@property (nonatomic, strong) SGSpeechTTSService* ttsService ;
-@property (nonatomic, copy)   NSString* appid;
-@property (nonatomic, copy)   NSString* uuid;
-@property (nonatomic, copy)   NSString* token;
+@property (nonatomic, strong) SGSpeechTTSService *ttsService;
+@property (nonatomic, copy)   NSString *appid;
+@property (nonatomic, copy)   NSString *uuid;
+@property (nonatomic, copy)   NSString *token;
 
-@property (nonatomic, strong) SogoSpeechUtteranceOnline * utteranceOnline;
-@property (nonatomic, strong) AVAudioPlayer * player;
+@property (nonatomic, strong) SogoSpeechUtteranceOnline *utteranceOnline;
+@property (nonatomic, strong) AVAudioPlayer *player;
 @end
 
 @implementation SGSpeechOnlineSynthesizer
 
--(id)init{
+- (id)init{
     if (self = [super init]) {
         _ttsService = [[SGSpeechTTSService alloc] init];
         _ttsService.delegate = self;
@@ -31,7 +34,7 @@
     return self;
 }
 
--(void)setAppid:(NSString *)appid uuid:(NSString *)uuid token:(NSString *)token {
+- (void)setAppid:(NSString *)appid uuid:(NSString *)uuid token:(NSString *)token {
     _appid = appid;
     _uuid = uuid;
     _token = token;
@@ -39,7 +42,6 @@
 
 - (void)speakUtterance:(SogoSpeechUtteranceOnline *)utterance{
     self.utteranceOnline = utterance;
-    
     SGSpeechTTSServiceConfig *config = [[SGSpeechTTSServiceConfig alloc] init];
     config.pitch = utterance.pitchMultiplier;
     config.volume = utterance.volume;
@@ -51,6 +53,7 @@
     [self.ttsService setAppid:_appid uuid:_uuid token:_token];
     [self.ttsService synthesisUtterance:utterance.speechString];
 }
+
 - (BOOL)stopSpeaking{
     if (self.player && self.player.isPlaying) {
         [self.player stop];
@@ -65,6 +68,7 @@
     return YES;
     return YES;
 }
+
 - (BOOL)pauseSpeaking{
     if (self.player && self.player.isPlaying) {
         [self.player pause];
@@ -76,6 +80,7 @@
     }
     return YES;
 }
+
 - (BOOL)continueSpeaking{
     if (self.player && !self.player.isPlaying) {
         [self.player play];
@@ -87,6 +92,7 @@
     }
     return YES;
 }
+
 - (BOOL)cancelSpeaking{
     if (self.player && self.player.isPlaying) {
         [self.player stop];
@@ -144,14 +150,14 @@
 
 @implementation SogoSpeechSynthesisVoiceOnline
 
-+(SogoSpeechSynthesisVoiceOnline*) voiceWithLanguage:(NSString *)language speaker:(NSString *)speaker {
++ (SogoSpeechSynthesisVoiceOnline*) voiceWithLanguage:(NSString *)language speaker:(NSString *)speaker {
     SogoSpeechSynthesisVoiceOnline * voiceOnline = [[SogoSpeechSynthesisVoiceOnline alloc] init];
     voiceOnline.speaker = speaker;
     voiceOnline.language = language;
     return voiceOnline;
 }
 
-+(SogoSpeechSynthesisVoiceOnline*) defaultVoice {
++ (SogoSpeechSynthesisVoiceOnline*) defaultVoice {
     SogoSpeechSynthesisVoiceOnline *voice = [[SogoSpeechSynthesisVoiceOnline alloc] init];
     voice.language = @"zh-cmn-Hans-CN";
     voice.speaker = @"Male";
@@ -165,6 +171,7 @@
 @end
 @implementation SogoSpeechUtteranceOnline
 static int static_ilinecnt = 0;
+
 - (id)init{
     self = [super init];
     if (self) {
@@ -176,12 +183,15 @@ static int static_ilinecnt = 0;
     }
     return self;
 }
+
 - (int)tag{
     return _ilinecnt;
 }
+
 + (SogoSpeechUtteranceOnline *)speechUtteranceWithString:(NSString *)string{
     return [[self alloc] initWithString:string];
 }
+
 - (SogoSpeechUtteranceOnline *)initWithString:(NSString *)string{
     self = [super init];
     if (self) {
@@ -194,9 +204,11 @@ static int static_ilinecnt = 0;
     }
     return self;
 }
+
 - (void)dealloc{
     self.speechString = nil;
 }
+
 /**
  * Optional speaking rate/speed, in the range [0.7, 1.3]. 1.0 is the normal
  * native speed supported by the specific voice.
@@ -205,8 +217,7 @@ static int static_ilinecnt = 0;
  **/
 /** Optional speaking pitch, in the range [0.8, 1.2]. 1.0 is the default pitch. */
 /** Optional audio volume, in the range [0.7, 1.3]. 1.0 is the default volume. */
--(void)setRate:(float)value
-{
+- (void)setRate:(float)value{
     float defaultRate = 1.0;
     if (fabs(value - 1.3) < 1e-6) {
         defaultRate = 1.299999;
@@ -220,8 +231,7 @@ static int static_ilinecnt = 0;
     _rate = defaultRate;
 }
 
--(void)setVolume:(float)volume
-{
+- (void)setVolume:(float)volume{
     float defaultValue = 1.0;
     if (fabs(volume - 1.3) < 1e-6) {
         defaultValue = 1.299999;
@@ -235,8 +245,7 @@ static int static_ilinecnt = 0;
     _volume = defaultValue;
 }
 
--(void)setPitchMultiplier:(float)pitchMultiplier
-{
+- (void)setPitchMultiplier:(float)pitchMultiplier{
     float defaultPitch = 1.0;
     if (fabs(pitchMultiplier - 1.2) < 1e-6) {
         defaultPitch = 1.199999;

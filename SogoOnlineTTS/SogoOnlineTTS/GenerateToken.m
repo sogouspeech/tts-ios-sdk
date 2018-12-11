@@ -1,9 +1,12 @@
 //
 //  GenerateToken.m
-//  Example
+//  tts-iOS-sdk
+//  Example of token application
 //
-//  Created by Marx Ma on 2018/10/20.
-//  Copyright © 2018年 sogou. All rights reserved.
+//  Created by sogou on 2018/12/10.
+//  Copyright 2018 Sogou Inc. All rights reserved.
+//  Use of this source code is governed by the Apache 2.0
+//  license that can be found in the LICENSE file.
 //
 
 #import "GenerateToken.h"
@@ -13,7 +16,10 @@
 
 @implementation GenerateToken
 
-+(void)requestTokenWithAppid:(NSString *)appid appkey:(NSString *)appkey uuid:(NSString *)uuid durationHours:(NSInteger)duration handler:(TokenResponseHandler)handler{
++ (void)requestTokenWithAppid:(NSString *)appid
+                       appkey:(NSString *)appkey
+                         uuid:(NSString *)uuid durationHours:(NSInteger)duration
+                      handler:(TokenResponseHandler)handler{
     NSURL *url = [NSURL URLWithString:TOKEN_HOST];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:url];
     [request setHTTPMethod:@"POST"];
@@ -23,7 +29,7 @@
     NSString* timeStr = [NSString stringWithFormat:@"%zds",duration*60*60];
     [paramDict setObject:timeStr forKey:@"exp"];
     [paramDict setObject:uuid forKey:@"uuid"];
-
+    
     NSError *jsonError;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:paramDict options:NSJSONWritingPrettyPrinted error:&jsonError];
     [request setHTTPBody:jsonData];
@@ -53,7 +59,6 @@
                     NSLog(@"CreateToken_Error:%@ ResponseStr: %@",[error localizedDescription],dataStr);
                     handler(nil, error, YES);
                 }
-
             }
             else{
                 NSDictionary *errorUserInfo = @{
